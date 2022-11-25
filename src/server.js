@@ -19,7 +19,14 @@ const server = http.createServer(app); // server access 가능
 const ws = new WebSocket.Server({ server });
 
 ws.on('connection', socket => {
-   console.log(socket);
+   console.log('Connected to Browser ✅');
+   socket.on('close', () => {
+      console.log('Disconnected from the Browser ❌');
+   });
+   socket.on('message', message => {
+      console.log('New message from browser: ', message.toString('utf-8'));
+   });
+   socket.send('hello!');
 });
 
 server.listen(3000, handleListen);
