@@ -1,16 +1,24 @@
 const socket = new WebSocket(`ws://${window.location.host}`); // 연결된 server를 의미함
 
-socket.addEventListener('open', () => {
-   console.log('Connected to Server ✅');
-});
+const welcome = document.querySelector('#welcome');
+const form = welcome.querySelector('form');
+const roomNameTitle = document.querySelector('#roomNameTitle');
 
-socket.addEventListener('message', message => {
-   console.log('New message: ', message.data, 'from the Server');
-});
+const room = document.querySelector('#room');
+room.hidden = true;
 
-socket.addEventListener('close', () => {
-   console.log('Disconnected to Server ❌');
-});
+const showRoom = roomName => {
+   room.hidden = false;
+   welcome.hidden = true;
+   roomNameTitle.innerText = `Room ${roomName}`;
+};
+
+const handleRoomSubmit = e => {
+   e.preventDefault();
+   const input = form.querySelector('input');
+   socket.emit('enterRoom', input.value, showRoom);
+   input.value = '';
+};
 
 setTimeout(() => {
    socket.send('3초 경과! Here is browser!');

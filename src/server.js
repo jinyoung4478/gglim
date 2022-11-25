@@ -18,10 +18,13 @@ const server = http.createServer(app); // server access 가능
 
 const ws = new WebSocket.Server({ server });
 
-ws.on('connection', socket => {
-   console.log('Connected to Browser ✅');
-   socket.on('close', () => {
-      console.log('Disconnected from the Browser ❌');
+wsServer.on('connection', socket => {
+   socket.onAny(event => {
+      console.log(`Socket Event: ${event}`);
+   });
+   socket.on('enterRoom', (roomName, done) => {
+      socket.join(roomName);
+      done(roomName);
    });
    socket.on('message', message => {
       console.log('New message from browser: ', message.toString('utf-8'));
