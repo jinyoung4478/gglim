@@ -1,25 +1,26 @@
-const socket = new WebSocket(`ws://${window.location.host}`); // 연결된 server를 의미함
+const socket = io();
 
-const welcome = document.querySelector('#welcome');
+const welcome = document.getElementById('welcome');
 const form = welcome.querySelector('form');
-const roomNameTitle = document.querySelector('#roomNameTitle');
+const room = document.getElementById('room');
 
-const room = document.querySelector('#room');
 room.hidden = true;
 
-const showRoom = roomName => {
-   room.hidden = false;
+let roomName;
+
+function showRoom() {
    welcome.hidden = true;
-   roomNameTitle.innerText = `Room ${roomName}`;
-};
+   room.hidden = false;
+   const h3 = room.querySelector('h3');
+   h3.innerText = `Room ${roomName}`;
+}
 
-const handleRoomSubmit = e => {
-   e.preventDefault();
+function handleRoomSubmit(event) {
+   event.preventDefault();
    const input = form.querySelector('input');
-   socket.emit('enterRoom', input.value, showRoom);
+   socket.emit('enter_room', input.value, showRoom);
+   roomName = input.value;
    input.value = '';
-};
+}
 
-setTimeout(() => {
-   socket.send('3초 경과! Here is browser!');
-}, 3000);
+form.addEventListener('submit', handleRoomSubmit);
