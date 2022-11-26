@@ -1,4 +1,4 @@
-import http from 'http'; // nodejs 내장
+import http from 'http';
 import SocketIO from 'socket.io';
 import express from 'express';
 
@@ -7,20 +7,28 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 app.use('/public', express.static(__dirname + '/public'));
-
-// routing
 app.get('/', (_, res) => res.render('home'));
 app.get('/*', (_, res) => res.redirect('/'));
 
-const httpServer = http.createServer(app); // server access 가능
+const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on('connection', socket => {
-   socket.on('enterRoom', (roomName, done) => {
-      console.log(roomName);
-      setTimeout(() => {
-         done('hhh');
-      }, 3000);
+   socket.onAny(event => {
+      console.log(`Socket Event: ${event}`);
+   });
+   socket.on('enter_room', (roomName, done) => {
+      socket.join(roomName);
+      done();
+      socket.to(roomName).emit('welcome'); // send message everybody except for me
+   });
+   socket.on('disconnecting', () => {
+      socket.rooms.forEach(room => socket.to(room).emit('bye'));
+   });
+
+   socket.on('newMessage', (msg, room, done) => {
+      socket.to(room).emit('newMessage', msg);
+      done();
    });
 });
 

@@ -1,17 +1,56 @@
 const socket = io();
 
-const welcome = document.querySelector('#welcome');
-const form = welcome.querySelector('form');
+const lobbyDiv = document.querySelector('#lobbyDiv');
+const roomNameForm = document.querySelector('#roomNameForm');
+const roomNameInput = document.querySelector('#roomNameInput');
+const roomNameButton = document.querySelector('#roomNameButton');
+const roomDiv = document.querySelector('#roomDiv');
+const roomTitle = document.querySelector('#roomTitle');
+const messageUl = document.querySelector('#messageUl');
+const messageForm = document.querySelector('#messageForm');
+const messageInput = document.querySelector('#messageInput');
+const messageButton = document.querySelector('#messageButton');
+let roomName;
 
-const backendDone = msg => {
-   console.log('Backend Done:', msg);
-};
+roomDiv.hidden = true;
 
-const handleRoomSubmit = e => {
+function addMessage(message) {
+   const li = document.createElement('li');
+   li.innerText = message;
+   messageUl.append(li);
+}
+
+function showRoom() {
+   lobbyDiv.hidden = true;
+   roomDiv.hidden = false;
+   roomTitle.innerText = `Room: ${roomName}`;
+}
+
+function handleRoomSubmit(e) {
    e.preventDefault();
-   const input = form.querySelector('input');
-   socket.emit('enterRoom', input.value, backendDone);
-   input.value = '';
-};
+   socket.emit('enter_room', roomNameInput.value, showRoom);
+   roomName = roomNameInput.value;
+   roomNameInput.value = '';
+}
 
-form.addEventListener('submit', handleRoomSubmit);
+function handleMessageSubmit(e) {
+   e.preventDefault();
+   socket.emit('newMessage', messageInput.value, roomName, () => {
+      addMessage(`You: ${messageInput.value}`);
+      messageInput.value = '';
+      messageInput.focus();
+   });
+}
+
+roomNameForm.addEventListener('submit', handleRoomSubmit);
+messageForm.addEventListener('submit', handleMessageSubmit);
+
+socket.on('welcome', () => {
+   addMessage('Someone joined!');
+});
+
+socket.on('bye', () => {
+   addMessage('Someone left!');
+});
+
+socket.on('newMessage', addMessage);
