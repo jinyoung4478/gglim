@@ -1,17 +1,56 @@
-const socket = new WebSocket(`ws://${window.location.host}`); // 연결된 server를 의미함
+const socket = io();
 
-socket.addEventListener('open', () => {
-   console.log('Connected to Server ✅');
+const lobbyDiv = document.querySelector('#lobbyDiv');
+const roomNameForm = document.querySelector('#roomNameForm');
+const roomNameInput = document.querySelector('#roomNameInput');
+const roomNameButton = document.querySelector('#roomNameButton');
+const roomDiv = document.querySelector('#roomDiv');
+const roomTitle = document.querySelector('#roomTitle');
+const messageUl = document.querySelector('#messageUl');
+const messageForm = document.querySelector('#messageForm');
+const messageInput = document.querySelector('#messageInput');
+const messageButton = document.querySelector('#messageButton');
+let roomName;
+
+roomDiv.hidden = true;
+
+function addMessage(message) {
+   const li = document.createElement('li');
+   li.innerText = message;
+   messageUl.append(li);
+}
+
+function showRoom() {
+   lobbyDiv.hidden = true;
+   roomDiv.hidden = false;
+   roomTitle.innerText = `Room: ${roomName}`;
+}
+
+function handleRoomSubmit(e) {
+   e.preventDefault();
+   socket.emit('enter_room', roomNameInput.value, showRoom);
+   roomName = roomNameInput.value;
+   roomNameInput.value = '';
+}
+
+function handleMessageSubmit(e) {
+   e.preventDefault();
+   socket.emit('newMessage', messageInput.value, roomName, () => {
+      addMessage(`You: ${messageInput.value}`);
+      messageInput.value = '';
+      messageInput.focus();
+   });
+}
+
+roomNameForm.addEventListener('submit', handleRoomSubmit);
+messageForm.addEventListener('submit', handleMessageSubmit);
+
+socket.on('welcome', () => {
+   addMessage('Someone joined!');
 });
 
-socket.addEventListener('message', message => {
-   console.log('New message: ', message.data, 'from the Server');
+socket.on('bye', () => {
+   addMessage('Someone left!');
 });
 
-socket.addEventListener('close', () => {
-   console.log('Disconnected to Server ❌');
-});
-
-setTimeout(() => {
-   socket.send('3초 경과! Here is browser!');
-}, 3000);
+socket.on('newMessage', addMessage);
