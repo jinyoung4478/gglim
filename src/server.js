@@ -20,6 +20,15 @@ wsServer.on('connection', socket => {
    socket.on('enter_room', (roomName, done) => {
       socket.join(roomName);
       done();
+      socket.to(roomName).emit('welcome'); // send message everybody except for me
+   });
+   socket.on('disconnecting', () => {
+      socket.rooms.forEach(room => socket.to(room).emit('bye'));
+   });
+
+   socket.on('newMessage', (msg, room, done) => {
+      socket.to(room).emit('newMessage', msg);
+      done();
    });
 });
 
