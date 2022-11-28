@@ -63,3 +63,5 @@ socket.on('bye', left => {
 });
 
 socket.on('newMessage', addMessage);
+
+socket.on('room_change', console.log);
