@@ -10,6 +10,9 @@ const messageUl = document.querySelector('#messageUl');
 const messageForm = document.querySelector('#messageForm');
 const messageInput = document.querySelector('#messageInput');
 const messageButton = document.querySelector('#messageButton');
+const nicknameForm = document.querySelector('#nicknameForm');
+const nicknameInput = document.querySelector('#nicknameInput');
+const nicknameButton = document.querySelector('#nicknameButton');
 let roomName;
 
 roomDiv.hidden = true;
@@ -42,15 +45,21 @@ function handleMessageSubmit(e) {
    });
 }
 
+function handleNicknameSubmit(e) {
+   e.preventDefault();
+   socket.emit('nickname', nicknameInput.value);
+}
+
 roomNameForm.addEventListener('submit', handleRoomSubmit);
 messageForm.addEventListener('submit', handleMessageSubmit);
+nicknameForm.addEventListener('submit', handleNicknameSubmit);
 
-socket.on('welcome', () => {
-   addMessage('Someone joined!');
+socket.on('welcome', user => {
+   addMessage(`${user} arrived!`);
 });
 
-socket.on('bye', () => {
-   addMessage('Someone left!');
+socket.on('bye', left => {
+   addMessage(`${left} left!`);
 });
 
 socket.on('newMessage', addMessage);
