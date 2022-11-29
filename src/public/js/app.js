@@ -4,6 +4,7 @@ const lobbyDiv = document.querySelector('#lobbyDiv');
 const roomNameForm = document.querySelector('#roomNameForm');
 const roomNameInput = document.querySelector('#roomNameInput');
 const roomNameButton = document.querySelector('#roomNameButton');
+const roomList = document.querySelector('#roomList');
 const roomDiv = document.querySelector('#roomDiv');
 const roomTitle = document.querySelector('#roomTitle');
 const messageUl = document.querySelector('#messageUl');
@@ -64,4 +65,12 @@ socket.on('bye', left => {
 
 socket.on('newMessage', addMessage);
 
-socket.on('room_change', console.log);
+socket.on('room_change', rooms => {
+   roomList.innerHTML = '';
+   if (rooms.length === 0) return;
+   rooms.forEach(room => {
+      const li = document.createElement('li');
+      li.innerText = room;
+      roomList.append(li);
+   });
+});
