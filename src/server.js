@@ -29,6 +29,10 @@ function publicRooms() {
    return publicRooms;
 }
 
+function countRoom(roomName) {
+   return wsServer.sockets.adapter.rooms.get(roomName)?.size;
+}
+
 wsServer.on('connection', socket => {
    socket['nickname'] = 'Anon';
    socket.onAny(event => {
@@ -36,13 +40,13 @@ wsServer.on('connection', socket => {
    });
    socket.on('enter_room', (roomName, done) => {
       socket.join(roomName);
-      done();
-      socket.to(roomName).emit('welcome', socket.nickname); // send message everybody except for me
+      done(countRoom(roomName));
+      socket.to(roomName).emit('welcome', socket.nickname, countRoom(roomName)); // send message everybody except for me
       // 모든 소켓에 메세지 보내기
       wsServer.sockets.emit('room_change', publicRooms());
    });
    socket.on('disconnecting', () => {
-      socket.rooms.forEach(room => socket.to(room).emit('bye', socket.nickname));
+      socket.rooms.forEach(room => socket.to(room).emit('bye', socket.nickname, countRoom(room) - 1));
       // disconnecting event는 socket이 방을 떠나기 직전에 실행되는 것
       // 따라서 이 emit은 disconnecting 전에 일어남
       // 완전 연결 종료 이후 event를 발생시키려면 disconnect를 사용

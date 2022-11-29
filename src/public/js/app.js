@@ -24,10 +24,10 @@ function addMessage(message) {
    messageUl.append(li);
 }
 
-function showRoom() {
+function showRoom(newCount) {
    lobbyDiv.hidden = true;
    roomDiv.hidden = false;
-   roomTitle.innerText = `Room: ${roomName}`;
+   roomTitle.innerText = `Room: ${roomName} (${newCount})`;
 }
 
 function handleRoomSubmit(e) {
@@ -55,11 +55,13 @@ roomNameForm.addEventListener('submit', handleRoomSubmit);
 messageForm.addEventListener('submit', handleMessageSubmit);
 nicknameForm.addEventListener('submit', handleNicknameSubmit);
 
-socket.on('welcome', user => {
+socket.on('welcome', (user, newCount) => {
+   roomTitle.innerText = `Room: ${roomName} (${newCount})`;
    addMessage(`${user} arrived!`);
 });
 
-socket.on('bye', left => {
+socket.on('bye', (left, newCount) => {
+   roomTitle.innerText = `Room: ${roomName} (${newCount})`;
    addMessage(`${left} left!`);
 });
 
