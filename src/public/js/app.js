@@ -19,6 +19,7 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 let myPeerConnection;
+let myDataChannel;
 
 async function getCamearas() {
    try {
@@ -83,9 +84,9 @@ function handleCameraClick() {
 async function handleCameraChange() {
    await getMedia(camerasSelect.value);
    if (myPeerConnection) {
-      const videoTrack = myStream.getVideoTracks()[0];
+      const videoTrack = myStream.getVideoTracks()[0]; // 나를 위한 트랙
       const videoSender = myPeerConnection.getSenders().find(sender => sender.track.kind === 'video');
-      videoSender.replaceTrack(videoTrack);
+      videoSender.replaceTrack(videoTrack); // peer를 위한 트랙
    }
 }
 
@@ -113,6 +114,10 @@ welcomeForm.addEventListener('submit', handleWelcomeSubmit);
 // sockets
 
 socket.on('welcome', async () => {
+   myDataChannel = myPeerConnection.createDataChannel('chat');
+   myDataChannel.addEventListener('message', console.log);
+   console.log('made data channel');
+
    const offer = await myPeerConnection.createOffer();
    myPeerConnection.setLocalDescription(offer);
    console.log('sent the offer');
@@ -120,6 +125,12 @@ socket.on('welcome', async () => {
 });
 
 socket.on('offer', async offer => {
+   myPeerConnection.addEventListener('datachannel', event => {
+      myDataChannel = event.channel;
+      console.log(myDataChannel);
+      myDataChannel.addEventListener('message', console.log);
+   });
+
    console.log('receive the offer');
    myPeerConnection.setRemoteDescription(offer);
    const answer = await myPeerConnection.createAnswer();
@@ -140,7 +151,13 @@ socket.on('ice', ice => {
 
 // RTC
 function makeConnection() {
-   myPeerConnection = new RTCPeerConnection();
+   myPeerConnection = new RTCPeerConnection({
+      iceServers: [
+         {
+            urls: 'stun:stun.l.google.com:19302',
+         },
+      ],
+   });
    myPeerConnection.addEventListener('icecandidate', handleIce);
    myPeerConnection.addEventListener('addstream', handleAddStream);
    myStream.getTracks().forEach(track => myPeerConnection.addTrack(track, myStream));
