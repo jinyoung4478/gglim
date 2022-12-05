@@ -5,6 +5,7 @@ window.addEventListener('popstate', () => {
    Router();
 });
 
+// SPA 동작
 document.addEventListener('DOMContentLoaded', () => {
    document.body.addEventListener('click', e => {
       if (e.target.matches('[data-link]')) {

@@ -1,0 +1,20 @@
+@import 'reset.css';
+
+/* Components */
+@import 'components/Nav.css';
+
+/* Pages */
+@import 'pages/Home.css';
+@import 'pages/Square.css';
+@import 'pages/Settings.css';
+
+body {
+   display: flex;
+   flex-direction: column;
+}
+
+#root {
+   margin: 2em;
+   line-height: 1.5;
+   font-weight: 500;
+}
