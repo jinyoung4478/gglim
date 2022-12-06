@@ -2,12 +2,15 @@ import http from 'http';
 import express from 'express';
 import path from 'path';
 import SocketIO from 'socket.io';
+import { userRouter } from './routers';
 
 const app = express();
 
 app.use(express.json());
 
 app.use('/views', express.static(path.resolve(__dirname, 'views')));
+
+app.use('/api/users', userRouter);
 
 app.get('/*', function (_, res) {
    res.sendFile(path.join(__dirname, 'views', 'index.html'));
