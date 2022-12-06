@@ -1,20 +1,18 @@
 import http from 'http';
-import SocketIO from 'socket.io';
 import express from 'express';
 import path from 'path';
+import SocketIO from 'socket.io';
+import { userRouter } from './routers';
 
 const app = express();
 
-//app.set('view engine', 'pug');
-app.set('views', __dirname + '/views');
-app.use('/public', express.static(__dirname + '/public'));
 app.use(express.json());
 
 app.use('/views', express.static(path.resolve(__dirname, 'views')));
-app.use('/static', express.static(path.resolve(__dirname, 'views', 'static')));
-//app.get('/*', (_, res) => res.render('index')); // pug engine
 
-app.get('/*', function (req, res) {
+app.use('/api/users', userRouter);
+
+app.get('/*', function (_, res) {
    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 

@@ -1,0 +1,14 @@
+{
+   "name": "GGLIM",
+   "short_name": "GGLIM",
+   "icons": [
+      {
+         "src": "/android-chrome-192x192.png",
+         "sizes": "143x143",
+         "type": "image/png"
+      }
+   ],
+   "theme_color": "#ffffff",
+   "background_color": "#ffffff",
+   "display": "standalone"
+}
