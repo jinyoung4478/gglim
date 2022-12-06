@@ -1,8 +1,12 @@
-const Home = async () => {
-   // const home = await fetch('/views/pages/Home.html');
-   // const contents = await home.text();
-
-   return `<h1 id="home">This is Home</h1>`;
+const Home = {
+   render: async () => {
+      return `
+         <h1 id="home">This is Home</h1>
+      `;
+   },
+   function: () => {
+      console.log('Home!');
+   },
 };
 
 export default Home;

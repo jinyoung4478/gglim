@@ -1,0 +1,159 @@
+/* header */
+.header {
+   position: relative;
+   display: flex;
+   justify-content: space-between;
+   font-size: 1.5rem;
+   padding: 1rem 0;
+}
+
+.header__logo {
+   margin: 0 2rem;
+}
+
+.header__logo a img {
+   height: 4rem;
+}
+
+.header__auth {
+   display: flex;
+   align-items: center;
+   position: relative;
+}
+
+.header__auth ul {
+   list-style: none;
+   margin-right: 5rem;
+}
+
+.header__auth ul li {
+   float: left;
+   margin: 0 0.5rem;
+}
+
+.header__auth ul li a {
+   color: #666;
+}
+
+.header__auth button {
+   position: absolute;
+   right: 1rem;
+}
+
+.header__auth button:hover {
+   color: var(--green);
+}
+
+/* GNB */
+.gnb {
+   display: block;
+}
+
+.gnb__nav {
+   display: none;
+}
+
+.gnb__nav ul {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   width: 100%;
+   height: 100%;
+}
+
+.gnb__nav ul li a {
+   display: inline-block;
+   width: 80vw;
+   height: 8vh;
+   line-height: 8vh;
+   font-size: 4rem;
+   color: white;
+   text-align: center;
+   border-radius: 1rem;
+   transition: 0.3s ease-in-out;
+}
+
+.gnb__nav ul li a:hover {
+   background-color: white;
+   color: var(--green);
+}
+
+.active {
+   display: block;
+   position: absolute;
+   width: 100%;
+   height: calc(100vh - 6.3rem);
+   z-index: 999;
+   background-color: #6eaf6e;
+}
+
+#gnb__buttons {
+   display: inline-block;
+   height: 100%;
+}
+
+.gnb__toggle-button {
+   padding: 1rem;
+   font-size: 2rem;
+   transition: 0.3s ease-in-out;
+}
+
+.gnb__close-button {
+   display: none;
+   padding: 1rem;
+   font-size: 2rem;
+   transition: 0.3s ease-in-out;
+}
+
+/* 태블릿용 CSS */
+@media all and (min-width: 768px) {
+   .header__auth ul {
+      margin-right: 2rem;
+   }
+   .header__auth button {
+      display: none;
+   }
+   .gnb {
+   }
+   .gnb__nav {
+      display: flex;
+      background-color: var(--green);
+   }
+   .gnb__nav ul {
+      display: flex;
+      flex-direction: row;
+   }
+
+   .gnb__nav ul li {
+      list-style-type: none;
+      float: left;
+      height: 5rem;
+      line-height: 5rem;
+   }
+
+   .gnb__nav ul li a {
+      width: 100px;
+      font-size: 1.6rem;
+      color: white;
+      width: 10rem;
+      height: inherit;
+      line-height: inherit;
+      border-radius: 0;
+   }
+
+   .active {
+      display: flex;
+      position: inherit;
+      width: inherit;
+      height: inherit;
+      z-index: 1;
+
+      display: flex;
+      background-color: var(--green);
+   }
+
+   #gnb__buttons {
+      display: none;
+   }
+}
