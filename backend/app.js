@@ -8,12 +8,20 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/views', express.static(path.resolve(__dirname, 'views')));
+//app.use('/views', express.static(path.resolve(__dirname, 'views')));
+//app.use('/public', express.static(path.resolve('../', __dirname, 'views')));
+
+app.use('/public', express.static(__dirname + '/../public'));
+app.use('/frontend', express.static(__dirname + '/../frontend'));
+app.use('/components', express.static(__dirname + '/../frontend/components'));
+app.use('/pages', express.static(__dirname + '/../frontend/pages'));
+app.use('/frontend', express.static(__dirname + '/../frontend'));
 
 app.use('/api/users', userRouter);
 
 app.get('/*', function (_, res) {
-   res.sendFile(path.join(__dirname, 'views', 'index.html'));
+   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+   //res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
 const httpServer = http.createServer(app);
@@ -35,6 +43,4 @@ wsServer.on('connection', socket => {
    });
 });
 
-const handleListen = () => console.log(`Listening on http://localhost:3000`);
-
-httpServer.listen(3000, handleListen);
+export default app;

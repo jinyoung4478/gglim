@@ -1,14 +1,14 @@
 // import Component
-import Header from '/views/components/Header.js';
+import Header from '/components/Header.js';
 // imrt Pages
-import Login from '/views/pages/Login.js';
-import Register from '/views/pages/Register.js';
-import Square from '/views/pages/Square.js';
-import Street from '/views/pages/Street.js';
-import Chat from '/views/pages/Chat.js';
-import Store from '/views/pages/Store.js';
-import Settings from '/views/pages/Settings.js';
-import NotFound from '/views/pages/NotFound.js';
+import Login from '/pages/Login.js';
+import Register from '/pages/Register.js';
+import Square from '/pages/Square.js';
+import Street from '/pages/Street.js';
+import Chat from '/pages/Chat.js';
+import Store from '/pages/Store.js';
+import Settings from '/pages/Settings.js';
+import NotFound from '/pages/NotFound.js';
 
 const routes = [
    { path: '/', view: Square, type: 'normal' },

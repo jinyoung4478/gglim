@@ -1,0 +1,10 @@
+{
+   "compilerOptions": {
+      "checkJs": false,
+      "baseUrl": ".",
+      "paths": {
+         "backend/*": ["backend/*"]
+      }
+   },
+   "exclude": ["node_modules", "*/node_modules/"]
+}
