@@ -1,4 +1,4 @@
-import Navigation from '/views/components/Navigation.js';
+import Navigation from '/frontend/components/Navigation.js';
 
 const Header = {
    script: type => {
@@ -27,7 +27,7 @@ const Header = {
                  <h1 class="header__logo">
                      <a href="/" data-link>
                          <label>끌림</label>
-                         <img src="/views/public/img/gglim-logo.png" alt="끌림" data-link/>
+                         <img src="/public/img/gglim-logo.png" alt="끌림" data-link/>
                      </a>
                  </h1>
                  <div class="header__auth">
