@@ -103,6 +103,16 @@
    border-radius: 50%;
 }
 
+.login-social__button img {
+   width: 24px;
+   height: 24px;
+}
+
+.login-social .login-social__button:last-child img {
+   width: 43px;
+   height: 43px;
+}
+
 .social-google {
    color: black;
    background-color: white;
@@ -126,6 +136,7 @@
    margin-top: 4rem;
    font-size: 1.3rem;
    font-weight: 400;
+   padding-bottom: 5.6rem;
 }
 .login-register__highlight {
    margin-left: 0.5rem;
