@@ -23,13 +23,13 @@ const Login = {
                </form>
                <div class="login-social">
                   <button class="login-social__button social-google">
-                     <img src="/views/public/img/google-logo.svg" />
+                     <img src="/public/img/google-logo.svg" />
                   </button>
                   <button class="login-social__button social-kakao">
-                     <img src="/views/public/img/kakao-logo.svg" />
+                     <img src="/public/img/kakao-logo.svg" />
                   </button>
                   <button class="login-social__button social-github">
-                     <img src="/views/public/img/github-logo.svg" />
+                     <img src="/public/img/github-logo.svg" />
                   </button>
                </div>
                <div class="login-register">
