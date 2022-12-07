@@ -2,6 +2,7 @@
 import Header from '/views/components/Header.js';
 // imrt Pages
 import Login from '/views/pages/Login.js';
+import Register from '/views/pages/Register.js';
 import Square from '/views/pages/Square.js';
 import Street from '/views/pages/Street.js';
 import Chat from '/views/pages/Chat.js';
@@ -12,6 +13,7 @@ import NotFound from '/views/pages/NotFound.js';
 const routes = [
    { path: '/', view: Square, type: 'normal' },
    { path: '/login', view: Login, type: 'auth' },
+   { path: '/register', view: Register, type: 'auth' },
    { path: '/street', view: Street, type: 'normal' },
    { path: '/store', view: Store, type: 'normal' },
    { path: '/chat', view: Chat, type: 'normal' },

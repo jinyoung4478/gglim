@@ -34,7 +34,7 @@ const Header = {
                      <ul>
                          <li><a href="#" data-link>이용방법</a></li>
                          <li><a href="/login" data-link>로그인</a></li>
-                         <li><a href="#" data-link>회원가입</a></li>
+                         <li><a href="/register" data-link>회원가입</a></li>
                      </ul>
                      ${
                         type !== 'auth'
