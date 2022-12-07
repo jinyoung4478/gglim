@@ -5,8 +5,8 @@ const Login = {
             <div class="login-wrapper">
                <h2 class="login-title">로그인</h2>
                <form class="login-form">
-                  <input type="email" class="login-form__input" placeholder="이메일" autocomplete="false">
-                  <input type="password" class="login-form__input" placeholder="비밀번호" autocomplete="off">
+                  <input type="email" class="login-form__input" placeholder="이메일" >
+                  <input type="password" class="login-form__input" placeholder="비밀번호" autocomplete="new-password">
                   <p class="login-forgot"><a href="#">로그인 정보를 잊으셨나요?</a></p>
                   <button class="login-login__button">로그인</button
                </form>
@@ -23,7 +23,7 @@ const Login = {
                </div>
                <div class="login-register">
                   <p>계정이 없으신가요?
-                     <a href="#" data-link>
+                     <a href="/register" data-link>
                         <p class="login-register__highlight" data-link>회원가입</p>
                      </a>
                   </p>
