@@ -1,3 +1,5 @@
+import * as API from '/services/api.js';
+
 const Login = {
    template: () => {
       return `
@@ -19,7 +21,7 @@ const Login = {
                   <p class="login-forgot">
                      <a href="#">로그인 정보를 잊으셨나요?</a>
                   </p>
-                  <button class="login-login__button">로그인</button
+                  <button id="login-button" class="login-login__button">로그인</button
                </form>
                <div class="login-social">
                   <button class="login-social__button social-google">
@@ -43,7 +45,13 @@ const Login = {
          </main>
       `;
    },
-   script: () => {},
+   script: () => {
+      const handleLoginButton = () => {
+         const data = API.post('/api/users/login', { test: 'test' });
+      };
+      const loginButton = document.getElementById('login-button');
+      loginButton.addEventListener('click', handleLoginButton);
+   },
 };
 
 export default Login;
