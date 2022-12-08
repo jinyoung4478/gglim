@@ -15,6 +15,7 @@ app.use('/public', express.static(__dirname + '/../public'));
 app.use('/frontend', express.static(__dirname + '/../frontend'));
 app.use('/components', express.static(__dirname + '/../frontend/components'));
 app.use('/pages', express.static(__dirname + '/../frontend/pages'));
+app.use('/services', express.static(__dirname + '/../frontend/services'));
 
 // API 라우팅
 app.use('/api/users', userRouter);
