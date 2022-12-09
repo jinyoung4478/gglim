@@ -1,4 +1,5 @@
 import * as API from '/services/api.js';
+import navigate from '/utils/navigate.js';
 
 const Login = {
    template: () => {
@@ -46,8 +47,15 @@ const Login = {
       `;
    },
    script: () => {
-      const handleLoginButton = () => {
-         const data = API.post('/api/users/login', { test: 'test' });
+      const handleLoginButton = e => {
+         e.preventDefault();
+         const email = 'test@test.com';
+         const password = 'password';
+         const res = API.post('/api/users/', { email, password });
+         const token = res.token;
+         //sessionStorage.setItem('token', token);
+
+         //navigate('http://localhost:3000/');
       };
       const loginButton = document.getElementById('login-button');
       loginButton.addEventListener('click', handleLoginButton);

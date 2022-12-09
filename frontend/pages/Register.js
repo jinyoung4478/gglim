@@ -1,3 +1,6 @@
+import * as API from '/services/api.js';
+import { validateEmail, validateEmailCode, formatEmailCode } from '/utils/validate.js';
+
 const Register = {
    template: () => {
       return `
@@ -16,10 +19,11 @@ const Register = {
                         id="register-email"
                         placeholder="이메일 계정"
                      />
-                     <button id="email-auth-button" class="register-input__button">
+                     <button id="register-email-button" class="register-input__button">
                         인증하기
                      </button>
                   </div>
+                  <p id="register-email-message" class="register-validate-message">이메일 정보를 입력해 주세요</p>
                   <div id="register-email-confirm" class="register-form__wrapper-email">
                      <div class="register-form__wrapper-email">
                         <input
@@ -29,9 +33,10 @@ const Register = {
                            class="register-input register-email"
                            placeholder="인증번호 입력"
                         />
-                        <button class="register-input__button">확인</button>
+                        <span id="register-timer"></span>
+                        <button id="register-email-code-button" class="register-input__button">확인</button>
                      </div>
-                     <p class="register-email-confirm-message">인증번호 6자리를 입력하세요.</p>
+                     <p id="register-email-code-message" class="register-validate-message">인증번호 6자리를 입력하세요.</p>
                   </div>
                </div>
                <div class="register-form__wrapper">
@@ -68,17 +73,111 @@ const Register = {
       </main>`;
    },
    script: () => {
-      const handleEmailAuthButton = e => {
-         e.preventDefault();
-         emailConfirmWrapper.style.display = 'block';
-         console.log('인증번호 발송');
-      };
       const emailConfirmWrapper = document.querySelector('#register-email-confirm');
+      const emailInput = document.querySelector('#register-email');
+      const emailButton = document.querySelector('#register-email-button');
+      const emailMessage = document.querySelector('#register-email-message');
+      const emailCodeInput = document.querySelector('#register-email-code');
+      const emailCodeButton = document.querySelector('#register-email-code-button');
+      const emailCodeTimer = document.querySelector('#register-timer');
+      const emailCodeMessage = document.querySelector('#register-email-code-message');
+      let timer = null;
+
       emailConfirmWrapper.style.display = 'none';
+      emailMessage.style.display = 'none';
+      emailButton.setAttribute('disabled', '');
 
-      const emailAuthButton = document.querySelector('#email-auth-button');
+      //validateEmail;
+      emailInput.addEventListener('input', handleInputEmail);
+      emailCodeInput.addEventListener('input', handleInputEmailCode);
+      emailButton.addEventListener('click', handleEmailAuthButton);
 
-      emailAuthButton.addEventListener('click', handleEmailAuthButton);
+      function handleInputEmail(e) {
+         e.preventDefault();
+         const email = e.target.value;
+         const isValide = validateEmail(email);
+         if (!isValide) {
+            emailInput.style['border-color'] = '#f66';
+            emailMessage.style.display = 'block';
+            emailMessage.style.color = '#f66';
+            emailButton.setAttribute('disabled', '');
+         } else {
+            emailInput.style['border-color'] = null;
+            emailMessage.style.display = 'none';
+            emailButton.removeAttribute('disabled');
+         }
+      }
+
+      function handleInputEmailCode(e) {
+         e.preventDefault();
+         const code = e.target.value;
+         // 이메일 인증 코드 6자리 형식 자동 포맷
+         emailCodeInput.value = formatEmailCode(code);
+         // 이메일 인증 코드 유효성 검증
+         const isValid = validateEmailCode(code);
+         if (isValid) {
+            emailCodeInput.style['border-color'] = null;
+            emailCodeMessage.style.color = null;
+            emailCodeMessage.innerText = '인증번호 6자리를 입력하세요.';
+         } else {
+            emailCodeInput.style['border-color'] = '#f66';
+            emailCodeMessage.style.color = '#f66';
+            emailCodeMessage.innerText = '인증번호를 정확히 입력해 주세요.';
+         }
+      }
+
+      async function handleEmailAuthButton(e) {
+         e.preventDefault();
+         // Show email authentication code form
+         emailButton.innerText = '재전송';
+         emailButton.style['background-color'] = 'transparent';
+         emailButton.style['border'] = '1px solid #cdd3d8';
+         emailButton.style['color'] = '#495057';
+
+         emailConfirmWrapper.style.display = 'block';
+
+         // Request email authentication code
+         const email = emailInput.value;
+         const res = await API.post('/api/users/email-auth', { email });
+         const deadline = res.deadline;
+
+         emailCodeInput.focus();
+
+         // Timer
+         let timeout = deadline * 60;
+         let min = '';
+         let sec = '';
+         // 재전송 버튼 클릭 시 이전 타이머 클리어
+         if (timer !== null) {
+            try {
+               emailCodeTimer.innerText = '';
+               emailCodeInput.removeAttribute('disabled');
+               emailCodeInput.style['border-color'] = null;
+               emailCodeButton.removeAttribute('disabled');
+               emailCodeMessage.style.color = null;
+               emailCodeMessage.innerText = '인증 유효 시간을 초과했습니다. 다시 시도해 주세요.';
+               clearInterval(timer);
+               timer = null;
+            } catch (err) {
+               console.error(err);
+            }
+         }
+         timer = setInterval(() => {
+            min = parseInt(timeout / 60);
+            sec = ('00' + (timeout % 60)).slice(-2);
+            emailCodeTimer.innerText = `${min}:${sec}`;
+            timeout -= 1;
+            // Timeover
+            if (timeout < 0) {
+               clearInterval(timer);
+               emailCodeInput.setAttribute('disabled', '');
+               emailCodeInput.style['border-color'] = '#f66';
+               emailCodeButton.setAttribute('disabled', '');
+               emailCodeMessage.style.color = '#f66';
+               emailCodeMessage.innerText = '인증 유효 시간을 초과했습니다. 다시 시도해 주세요.';
+            }
+         }, 1000);
+      }
    },
 };
 
