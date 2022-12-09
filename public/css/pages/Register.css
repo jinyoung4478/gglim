@@ -43,6 +43,7 @@
 .register-form__wrapper-email {
    width: 100%;
    display: flex;
+   position: relative;
    align-items: center;
 }
 
@@ -89,7 +90,16 @@
 }
 
 .register-input__button:disabled {
-   background-color: var(--green-light);
+   opacity: 0.7;
+}
+
+.register-validate-message {
+   width: 100%;
+   margin-top: 1rem;
+   font-size: 1.2rem;
+   font-weight: 400;
+   font-style: normal;
+   color: #868e96;
 }
 
 #register-email-confirm {
@@ -98,13 +108,13 @@
    margin-top: 1rem;
 }
 
-.register-email-confirm-message {
-   width: 100%;
-   margin-top: 1rem;
-   font-size: 1.2rem;
+#register-timer {
+   position: absolute;
+   right: 0;
+   margin-right: 9rem;
+   font-size: 1.4rem;
    font-weight: 400;
-   font-style: normal;
-   color: #868e96;
+   color: #e54545;
 }
 
 .register-password-wrapper {
