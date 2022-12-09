@@ -10,6 +10,11 @@ const subway_stations = model('subway_stations', SubwayStation);
 const User = model('users', UserSchema);
 
 class UserModel {
+   async findByEmail(email) {
+      const user = await User.findOne({ email });
+      return user;
+   }
+
    async create(userInfo) {
       const createdNewUser = await User.create(userInfo);
 
