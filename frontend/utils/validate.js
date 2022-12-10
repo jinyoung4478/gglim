@@ -10,6 +10,11 @@ export const validateEmailCode = code => {
    return code.match(regExp);
 };
 
+export const validatePassword = password => {
+   const regExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+   return password.match(regExp);
+};
+
 export const formatEmailCode = code => {
    const result = code.replace(/[^0-9]/g, '');
    return result;

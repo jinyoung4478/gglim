@@ -1,5 +1,6 @@
 import * as API from '/services/api.js';
-import { validateEmail, validateEmailCode, formatEmailCode } from '/utils/validate.js';
+import { validateEmail, validateEmailCode, formatEmailCode, validatePassword } from '/utils/validate.js';
+import navigate from '/utils/navigate.js';
 
 const Register = {
    template: () => {
@@ -46,28 +47,38 @@ const Register = {
                   </div>
                </div>
                <div class="register-form__wrapper">
-                  <p class="register-form__head">이름</p>
-                  <input type="text" class="register-input" placeholder="이름 입력" />
+                  <p class="register-form__head">닉네임</p>
+                  <input
+                     id="register-name"
+                     type="text"
+                     class="register-input"
+                     placeholder="닉네임 입력" 
+                     autocomplete="off"
+                  />
+                  <p id="register-name-message" class="register-validate-message"></p>
                </div>
                <div class="register-form__wrapper">
                   <p class="register-form__head">비밀번호</p>
                   <div class="register-password-wrapper">
                      <input
                         type="password"
-                        disabled
                         class="register-input register-input-password"
                         placeholder="비밀번호 입력"
-                        autocomplete="new-password"
+                        data-id="password"
+                        autocomplete="off"
                      />
+                     <p class="register-validate-message register-password-message" data-id="password-message">123</p>
                      <input
                         type="password"
                         class="register-input register-input-password"
                         placeholder="비밀번호 확인"
+                        data-id="newPassword"
                         autocomplete="new-password"
                      />
+                     <p class="register-validate-message register-password-message" data-id="newPassword-message">123</p>
                   </div>
                </div>
-               <button class="register-complete">완료</button>
+               <button class="register-complete" data-id="complete">완료</button>
             </form>
             <p class="register-login">
                이미 계정이 있나요?
@@ -87,7 +98,17 @@ const Register = {
       const emailCodeButton = document.querySelector('#register-email-code-button');
       const emailCodeTimer = document.querySelector('#register-timer');
       const emailCodeMessage = document.querySelector('#register-email-code-message');
+      const nameInput = document.querySelector('#register-name');
+      const nameMessage = document.querySelector('#register-name-message');
+      const passwordInput = document.querySelector("[data-id='password']");
+      const passwordMessage = document.querySelector("[data-id='password-message']");
+      const newPasswordInput = document.querySelector("[data-id='newPassword']");
+      const newPasswordMessage = document.querySelector("[data-id='newPassword-message']");
+      const completeButton = document.querySelector("[data-id='complete']");
+
       let timer = null;
+      let email;
+      let formData = new Object();
 
       initAllElements();
       addAllEvents();
@@ -95,7 +116,9 @@ const Register = {
       function initAllElements() {
          emailCodeWrapper.style.display = 'none';
          emailMessage.style.display = 'none';
-         //emailButton.setAttribute('disabled', '');
+         nameMessage.style.display = 'none';
+         passwordMessage.style.display = 'none';
+         newPasswordMessage.style.display = 'none';
       }
 
       function addAllEvents() {
@@ -107,11 +130,19 @@ const Register = {
          emailCodeInput.addEventListener('input', handleEmailCodeInput);
          // Email Code Check Button
          emailCodeButton.addEventListener('click', handleEmailCodeButton);
+         // Name Input
+         nameInput.addEventListener('focusout', handleNameInput);
+         // Password Input
+         passwordInput.addEventListener('focusout', handlePasswordInput);
+         // New Password Input
+         newPasswordInput.addEventListener('focusout', handleNewPasswordInput);
+         // Complete Button
+         completeButton.addEventListener('click', handleSubmitButton);
       }
 
       function handleEmailInput(e) {
          e.preventDefault();
-         const email = e.target.value;
+         email = e.target.value;
          const isValide = validateEmail(email);
          if (!isValide) {
             emailInput.style['border-color'] = '#f66';
@@ -129,7 +160,22 @@ const Register = {
       async function handleEmailButton(e) {
          e.preventDefault();
          // Request email authentication code
-         const email = emailInput.value;
+         email = emailInput.value;
+
+         if (emailButton.innerText === '변경하기') {
+            delete formData.email;
+            emailInput.style['border-color'] = null;
+            emailInput.style['background-color'] = null;
+            emailInput.removeAttribute('disabled');
+            emailInput.focus();
+            emailButton.innerText = '인증하기';
+            emailButton.style['background-color'] = null;
+            emailButton.style['border'] = null;
+            emailButton.style['color'] = null;
+            emailMessage.style.display = 'none';
+            emailButton.removeAttribute('disabled');
+            return;
+         }
 
          const res = await API.post('/api/users/email-auth', { email });
          if (res.error) {
@@ -137,7 +183,6 @@ const Register = {
             emailMessage.style.display = 'block';
             emailMessage.style.color = '#f66';
             emailMessage.innerText = res.message;
-            console.log(res);
             return;
          }
          // Show email authentication code form
@@ -145,10 +190,7 @@ const Register = {
          emailButton.style['background-color'] = 'transparent';
          emailButton.style['border'] = '1px solid #cdd3d8';
          emailButton.style['color'] = '#495057';
-
          emailCodeWrapper.style.display = 'block';
-
-         //emailMessage.innerText = '이메일 정보를 입력해 주세요';
 
          const deadline = res.deadline;
 
@@ -217,17 +259,141 @@ const Register = {
          // 이메일 인증 코드 유효성 검증
          const isValid = validateEmailCode(code);
          if (isValid) {
-            console.log('Req', code);
-
             // 인증 코드 확인 API 호출
-
-            // 인증 성공 시
-            // 1. emailCodeWrapper display none
-            // 2. 재전송 -> 변경하기
-
+            const res = await API.post('/api/users/code', { email, code });
             // 실패 시
             // 실패 안내 팝업 메세지 발생
+            if (res.error) {
+               emailCodeInput.style['border-color'] = '#f66';
+               emailCodeMessage.style.color = '#f66';
+               emailCodeMessage.innerText = '인증번호를 정확히 입력해 주세요.';
+               emailCodeButton.setAttribute('disabled', '');
+               emailCodeInput.focus();
+               return;
+            }
+            // 인증 성공
+            emailCodeWrapper.style.display = 'none';
+            emailInput.setAttribute('disabled', '');
+            emailInput.style['border-color'] = null;
+            emailInput.style['background-color'] = '#f8f9fa';
+            emailButton.innerText = '변경하기';
+            passwordInput.removeAttribute('disabled');
+            newPasswordInput.removeAttribute('disabled');
+            formData.email = email;
          }
+      }
+
+      function handleNameInput(e) {
+         e.preventDefault();
+         const name = e.target.value;
+         if (name.length < 2) {
+            nameInput.style['border-color'] = '#f66';
+            nameMessage.style.display = 'block';
+            nameMessage.innerText = '최소 2자 이상입니다.';
+            delete formData.name;
+            return;
+         }
+         if (name.length > 20) {
+            nameInput.style['border-color'] = '#f66';
+            nameMessage.style.display = 'block';
+            nameMessage.innerText = '닉네임 최대 길이는 20자 입니다. 확인해 주세요.';
+            delete formData.name;
+            return;
+         }
+         nameInput.style['border-color'] = null;
+         nameMessage.style.display = 'none';
+         formData.name = name;
+      }
+
+      function handlePasswordInput(e) {
+         e.preventDefault();
+         const password = e.target.value;
+         if (password.length < 8) {
+            passwordInput.style['border-color'] = '#f66';
+            passwordMessage.style.display = 'block';
+            passwordMessage.innerText = '최소 8자입니다.';
+            return;
+         }
+         if (password.length > 20) {
+            passwordInput.style['border-color'] = '#f66';
+            passwordMessage.style.display = 'block';
+            passwordMessage.innerText = '최대 20자입니다.';
+            return;
+         }
+
+         const isValid = validatePassword(password);
+         if (!isValid) {
+            passwordInput.style['border-color'] = '#f66';
+            passwordMessage.style.display = 'block';
+            passwordMessage.innerText = '영문,숫자,특수문자를 조합한 8자 이상';
+            return;
+         }
+         passwordInput.style['border-color'] = null;
+         passwordMessage.style.display = 'none';
+         //
+      }
+
+      function handleNewPasswordInput(e) {
+         e.preventDefault();
+         const password = passwordInput.value;
+         const newPassword = e.target.value;
+         if (password !== newPassword) {
+            newPasswordInput.style['border-color'] = '#f66';
+            newPasswordMessage.style.display = 'block';
+            newPasswordMessage.innerText = '동일한 비밀번호를 입력해주세요.';
+            return;
+         }
+         newPasswordInput.style['border-color'] = null;
+         newPasswordMessage.style.display = 'none';
+      }
+
+      async function handleSubmitButton(e) {
+         e.preventDefault();
+
+         // 이메일 확인
+         if (!formData.email) {
+            emailInput.style['border-color'] = '#f66';
+            emailInput.focus();
+            emailMessage.style.display = 'block';
+            emailMessage.style.color = '#f66';
+            emailMessage.innerText = '이메일 인증이 필요합니다.';
+            return;
+         }
+         if (!formData.name) {
+            nameInput.style['border-color'] = '#f66';
+            emailInput.focus();
+            nameMessage.style.display = 'block';
+            nameMessage.innerText = '닉네임을 확인해주세요.';
+            return;
+         }
+         const password = passwordInput.value;
+         const isValid = validatePassword(password);
+         if (!isValid) {
+            passwordInput.style['border-color'] = '#f66';
+            passwordInput.focus();
+            passwordMessage.style.display = 'block';
+            passwordMessage.innerText = '비밀번호를 올바르게 설정해주세요.';
+            return;
+         }
+         const newPassword = newPasswordInput.value;
+         if (password !== newPassword) {
+            newPasswordInput.style['border-color'] = '#f66';
+            newPasswordInput.focus();
+            newPasswordMessage.style.display = 'block';
+            newPasswordMessage.innerText = '동일한 비밀번호를 입력해주세요.';
+            return;
+         }
+         // 유효성 검증 완료
+         formData.password = password;
+
+         const res = await API.post('/api/users/', formData);
+
+         if (res.error) {
+            alert(`Error 발생: ${res.message}`);
+            return;
+         }
+
+         navigate('/login');
       }
    },
 };
