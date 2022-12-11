@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { userRouter } from './routers';
+import { userRouter, authRouter } from './routers';
 import { errorHandler } from './middlewares';
 import './db';
 
@@ -12,6 +12,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // API 라우팅
 app.use('/api/users', userRouter);
+app.use('/api/auth', authRouter);
+
 // 가상 경로 접두부를 이용한 정적 리소스 마운팅
 app.use('/public', express.static(__dirname + '/../public'));
 app.use('/frontend', express.static(__dirname + '/../frontend'));
