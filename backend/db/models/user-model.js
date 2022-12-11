@@ -1,15 +1,20 @@
 import { model } from 'mongoose';
-import { UserSchema } from '../schemas/user-schema';
-
-import { Schema } from 'mongoose';
-const SubwayStation = new Schema({
-   station_code: String,
-});
-const subway_stations = model('subway_stations', SubwayStation);
+import { UserSchema, EmailAuthSchema } from '../schemas/user-schema';
 
 const User = model('users', UserSchema);
+const EmailAuth = model('email-auth', EmailAuthSchema);
 
 class UserModel {
+   async findEmailAuthByEmail(email) {
+      const emailAuth = await EmailAuth.findOne({ email }).sort({ createdAt: -1 });
+      return emailAuth;
+   }
+
+   async createEmailAuth(email, code) {
+      const emailAuth = await EmailAuth.create({ email, code });
+      return emailAuth;
+   }
+
    async findByEmail(email) {
       const user = await User.findOne({ email });
       return user;
@@ -17,10 +22,6 @@ class UserModel {
 
    async create(userInfo) {
       const createdNewUser = await User.create(userInfo);
-
-      await subway_stations.create({
-         station_code: 'data[3]',
-      });
       return createdNewUser;
    }
 }

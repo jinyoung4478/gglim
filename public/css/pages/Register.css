@@ -117,17 +117,25 @@
    color: #e54545;
 }
 
+#register-name-message {
+   color: #ff6666;
+}
+
 .register-password-wrapper {
    display: flex;
    flex-direction: column;
 }
 
-.register-input-password {
-   margin-bottom: 1rem;
+.register-input-password:nth-child(3) {
+   margin-top: 0.7rem;
 }
 
 .register-input-password:disabled {
    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.register-password-message {
+   color: #f66;
 }
 
 .register-complete {

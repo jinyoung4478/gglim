@@ -43,4 +43,20 @@ const UserSchema = new Schema(
    },
 );
 
-export { UserSchema };
+const EmailAuthSchema = new Schema({
+   email: {
+      type: String,
+      required: true,
+   },
+   code: {
+      type: String,
+      required: true,
+   },
+   createdAt: {
+      type: Date,
+      expires: 180,
+      default: Date.now,
+   },
+});
+
+export { UserSchema, EmailAuthSchema };
