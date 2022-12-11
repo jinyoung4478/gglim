@@ -21,6 +21,11 @@ document.body.addEventListener('click', e => {
       path = e.target.parentElement.href;
    }
 
+   if (e.metaKey) {
+      window.open(path, '_blank').focus();
+      return;
+   }
+
    if (location.href == path) {
       navigate();
    } else {

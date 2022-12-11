@@ -105,7 +105,6 @@ const Register = {
       const newPasswordInput = document.querySelector("[data-id='newPassword']");
       const newPasswordMessage = document.querySelector("[data-id='newPassword-message']");
       const completeButton = document.querySelector("[data-id='complete']");
-
       let timer = null;
       let email;
       let formData = new Object();
@@ -146,12 +145,14 @@ const Register = {
          const isValide = validateEmail(email);
          if (!isValide) {
             emailInput.style['border-color'] = '#f66';
+            emailInput.style['background-color'] = '#ff9b9b0f';
             emailMessage.style.display = 'block';
             emailMessage.style.color = '#f66';
             emailMessage.innerText = '이메일 정보를 입력해 주세요';
             emailButton.setAttribute('disabled', '');
          } else {
             emailInput.style['border-color'] = null;
+            emailInput.style['background-color'] = null;
             emailMessage.style.display = 'none';
             emailButton.removeAttribute('disabled');
          }
@@ -177,9 +178,10 @@ const Register = {
             return;
          }
 
-         const res = await API.post('/api/users/email-auth', { email });
+         const res = await API.post('/api/auth/email', { email });
          if (res.error) {
             emailInput.style['border-color'] = '#f66';
+            emailInput.style['background-color'] = '#ff9b9b0f';
             emailMessage.style.display = 'block';
             emailMessage.style.color = '#f66';
             emailMessage.innerText = res.message;
@@ -206,6 +208,7 @@ const Register = {
                emailCodeTimer.innerText = '';
                emailCodeInput.removeAttribute('disabled');
                emailCodeInput.style['border-color'] = null;
+               emailCodeInput.style['background-color'] = null;
                emailCodeButton.removeAttribute('disabled');
                emailCodeMessage.style.color = null;
                emailCodeMessage.innerText = '인증번호 6자리를 입력하세요.';
@@ -225,6 +228,7 @@ const Register = {
                clearInterval(timer);
                emailCodeInput.setAttribute('disabled', '');
                emailCodeInput.style['border-color'] = '#f66';
+               emailCodeInput.style['background-color'] = '#ff9b9b0f';
                emailCodeButton.setAttribute('disabled', '');
                emailCodeMessage.style.color = '#f66';
                emailCodeMessage.innerText = '인증 유효 시간을 초과했습니다. 다시 시도해 주세요.';
@@ -241,11 +245,13 @@ const Register = {
          const isValid = validateEmailCode(code);
          if (isValid) {
             emailCodeInput.style['border-color'] = null;
+            emailCodeInput.style['background-color'] = null;
             emailCodeMessage.style.color = null;
             emailCodeMessage.innerText = '인증번호 6자리를 입력하세요.';
             emailCodeButton.removeAttribute('disabled');
          } else {
             emailCodeInput.style['border-color'] = '#f66';
+            emailCodeInput.style['background-color'] = '#ff9b9b0f';
             emailCodeMessage.style.color = '#f66';
             emailCodeMessage.innerText = '인증번호를 정확히 입력해 주세요.';
             emailCodeButton.setAttribute('disabled', '');
@@ -260,11 +266,12 @@ const Register = {
          const isValid = validateEmailCode(code);
          if (isValid) {
             // 인증 코드 확인 API 호출
-            const res = await API.post('/api/users/code', { email, code });
+            const res = await API.post('/api/auth/code', { email, code });
             // 실패 시
             // 실패 안내 팝업 메세지 발생
             if (res.error) {
                emailCodeInput.style['border-color'] = '#f66';
+               emailCodeInput.style['background-color'] = '#ff9b9b0f';
                emailCodeMessage.style.color = '#f66';
                emailCodeMessage.innerText = '인증번호를 정확히 입력해 주세요.';
                emailCodeButton.setAttribute('disabled', '');
@@ -288,6 +295,7 @@ const Register = {
          const name = e.target.value;
          if (name.length < 2) {
             nameInput.style['border-color'] = '#f66';
+            nameInput.style['background-color'] = '#ff9b9b0f';
             nameMessage.style.display = 'block';
             nameMessage.innerText = '최소 2자 이상입니다.';
             delete formData.name;
@@ -295,12 +303,14 @@ const Register = {
          }
          if (name.length > 20) {
             nameInput.style['border-color'] = '#f66';
+            nameInput.style['background-color'] = '#ff9b9b0f';
             nameMessage.style.display = 'block';
             nameMessage.innerText = '닉네임 최대 길이는 20자 입니다. 확인해 주세요.';
             delete formData.name;
             return;
          }
          nameInput.style['border-color'] = null;
+         nameInput.style['background-color'] = null;
          nameMessage.style.display = 'none';
          formData.name = name;
       }
@@ -310,12 +320,14 @@ const Register = {
          const password = e.target.value;
          if (password.length < 8) {
             passwordInput.style['border-color'] = '#f66';
+            passwordInput.style['background-color'] = '#ff9b9b0f';
             passwordMessage.style.display = 'block';
             passwordMessage.innerText = '최소 8자입니다.';
             return;
          }
          if (password.length > 20) {
             passwordInput.style['border-color'] = '#f66';
+            passwordInput.style['background-color'] = '#ff9b9b0f';
             passwordMessage.style.display = 'block';
             passwordMessage.innerText = '최대 20자입니다.';
             return;
@@ -324,11 +336,13 @@ const Register = {
          const isValid = validatePassword(password);
          if (!isValid) {
             passwordInput.style['border-color'] = '#f66';
+            passwordInput.style['background-color'] = '#ff9b9b0f';
             passwordMessage.style.display = 'block';
             passwordMessage.innerText = '영문,숫자,특수문자를 조합한 8자 이상';
             return;
          }
          passwordInput.style['border-color'] = null;
+         passwordInput.style['background-color'] = null;
          passwordMessage.style.display = 'none';
          //
       }
@@ -339,11 +353,13 @@ const Register = {
          const newPassword = e.target.value;
          if (password !== newPassword) {
             newPasswordInput.style['border-color'] = '#f66';
+            newPasswordInput.style['background-color'] = '#ff9b9b0f';
             newPasswordMessage.style.display = 'block';
             newPasswordMessage.innerText = '동일한 비밀번호를 입력해주세요.';
             return;
          }
          newPasswordInput.style['border-color'] = null;
+         newPasswordInput.style['background-color'] = null;
          newPasswordMessage.style.display = 'none';
       }
 
@@ -353,6 +369,7 @@ const Register = {
          // 이메일 확인
          if (!formData.email) {
             emailInput.style['border-color'] = '#f66';
+            emailInput.style['background-color'] = '#ff9b9b0f';
             emailInput.focus();
             emailMessage.style.display = 'block';
             emailMessage.style.color = '#f66';
@@ -361,6 +378,7 @@ const Register = {
          }
          if (!formData.name) {
             nameInput.style['border-color'] = '#f66';
+            nameInput.style['background-color'] = '#ff9b9b0f';
             emailInput.focus();
             nameMessage.style.display = 'block';
             nameMessage.innerText = '닉네임을 확인해주세요.';
@@ -370,6 +388,7 @@ const Register = {
          const isValid = validatePassword(password);
          if (!isValid) {
             passwordInput.style['border-color'] = '#f66';
+            passwordInput.style['background-color'] = '#ff9b9b0f';
             passwordInput.focus();
             passwordMessage.style.display = 'block';
             passwordMessage.innerText = '비밀번호를 올바르게 설정해주세요.';
@@ -378,6 +397,7 @@ const Register = {
          const newPassword = newPasswordInput.value;
          if (password !== newPassword) {
             newPasswordInput.style['border-color'] = '#f66';
+            newPasswordInput.style['background-color'] = '#ff9b9b0f';
             newPasswordInput.focus();
             newPasswordMessage.style.display = 'block';
             newPasswordMessage.innerText = '동일한 비밀번호를 입력해주세요.';
