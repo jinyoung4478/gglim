@@ -76,8 +76,8 @@
 }
 
 .register-input__button {
-   font-size: 1.4rem;
    color: white;
+   font-size: 1.4rem;
    text-align: center;
    width: 9rem;
    height: 4.4rem;
@@ -102,7 +102,7 @@
    color: #868e96;
 }
 
-#register-email-confirm {
+#register-email-code-wrapper {
    display: flex;
    flex-direction: column;
    margin-top: 1rem;

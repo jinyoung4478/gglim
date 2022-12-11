@@ -26,7 +26,7 @@ const Register = {
                   <p id="register-email-message" class="register-validate-message">
                      이메일 정보를 입력해 주세요
                   </p>
-                  <div id="register-email-confirm" class="register-form__wrapper-email">
+                  <div id="register-email-code-wrapper" class="register-form__wrapper-email">
                      <div class="register-form__wrapper-email">
                         <input
                            type="text"
@@ -79,7 +79,7 @@ const Register = {
       </main>`;
    },
    script: () => {
-      const emailConfirmWrapper = document.querySelector('#register-email-confirm');
+      const emailCodeWrapper = document.querySelector('#register-email-code-wrapper');
       const emailInput = document.querySelector('#register-email');
       const emailButton = document.querySelector('#register-email-button');
       const emailMessage = document.querySelector('#register-email-message');
@@ -93,7 +93,7 @@ const Register = {
       addAllEvents();
 
       function initAllElements() {
-         emailConfirmWrapper.style.display = 'none';
+         emailCodeWrapper.style.display = 'none';
          emailMessage.style.display = 'none';
          //emailButton.setAttribute('disabled', '');
       }
@@ -117,6 +117,7 @@ const Register = {
             emailInput.style['border-color'] = '#f66';
             emailMessage.style.display = 'block';
             emailMessage.style.color = '#f66';
+            emailMessage.innerText = '이메일 정보를 입력해 주세요';
             emailButton.setAttribute('disabled', '');
          } else {
             emailInput.style['border-color'] = null;
@@ -127,17 +128,28 @@ const Register = {
 
       async function handleEmailButton(e) {
          e.preventDefault();
+         // Request email authentication code
+         const email = emailInput.value;
+
+         const res = await API.post('/api/users/email-auth', { email });
+         if (res.error) {
+            emailInput.style['border-color'] = '#f66';
+            emailMessage.style.display = 'block';
+            emailMessage.style.color = '#f66';
+            emailMessage.innerText = res.message;
+            console.log(res);
+            return;
+         }
          // Show email authentication code form
          emailButton.innerText = '재전송';
          emailButton.style['background-color'] = 'transparent';
          emailButton.style['border'] = '1px solid #cdd3d8';
          emailButton.style['color'] = '#495057';
 
-         emailConfirmWrapper.style.display = 'block';
+         emailCodeWrapper.style.display = 'block';
 
-         // Request email authentication code
-         const email = emailInput.value;
-         const res = await API.post('/api/users/email-auth', { email });
+         //emailMessage.innerText = '이메일 정보를 입력해 주세요';
+
          const deadline = res.deadline;
 
          emailCodeInput.focus();
@@ -154,7 +166,7 @@ const Register = {
                emailCodeInput.style['border-color'] = null;
                emailCodeButton.removeAttribute('disabled');
                emailCodeMessage.style.color = null;
-               emailCodeMessage.innerText = '인증 유효 시간을 초과했습니다. 다시 시도해 주세요.';
+               emailCodeMessage.innerText = '인증번호 6자리를 입력하세요.';
                clearInterval(timer);
                timer = null;
             } catch (err) {
@@ -206,6 +218,15 @@ const Register = {
          const isValid = validateEmailCode(code);
          if (isValid) {
             console.log('Req', code);
+
+            // 인증 코드 확인 API 호출
+
+            // 인증 성공 시
+            // 1. emailCodeWrapper display none
+            // 2. 재전송 -> 변경하기
+
+            // 실패 시
+            // 실패 안내 팝업 메세지 발생
          }
       }
    },
