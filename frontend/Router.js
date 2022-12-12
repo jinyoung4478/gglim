@@ -11,13 +11,13 @@ import Settings from '/pages/Settings.js';
 import NotFound from '/pages/NotFound.js';
 
 const routes = [
-   { path: '/', view: Square, type: 'normal' },
-   { path: '/login', view: Login, type: 'auth' },
-   { path: '/register', view: Register, type: 'auth' },
-   { path: '/street', view: Street, type: 'normal' },
-   { path: '/store', view: Store, type: 'normal' },
-   { path: '/chat', view: Chat, type: 'normal' },
-   { path: '/settings', view: Settings, type: 'normal' },
+   { path: '/', view: Square },
+   { path: '/login', view: Login },
+   { path: '/register', view: Register },
+   { path: '/street', view: Street },
+   { path: '/store', view: Store },
+   { path: '/chat', view: Chat },
+   { path: '/settings', view: Settings },
 ];
 
 const Router = () => {
@@ -25,14 +25,14 @@ const Router = () => {
    const page = match ? match.view : NotFound;
 
    // Load Header
-   const header = Header.template(match.type);
+   const header = Header.template();
    // Load Page
    const main = page.template();
    const contents = header + main;
    document.querySelector('#root').innerHTML = contents;
 
    // script
-   Header.script(match.type);
+   Header.script();
    page.script();
 };
 
