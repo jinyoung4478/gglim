@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { authService } from '../services/auth-service';
+import { authService, userService } from '../services/auth-service';
+import { loginRequired } from '../middlewares';
 import is from '@sindresorhus/is';
 
 const authRouter = Router();
@@ -47,18 +48,22 @@ authRouter.post('/login', async (req, res, next) => {
 
       const { email, password } = req.body;
 
-      const userToken = await authService.loginUser({ email, password });
-
-      res.status(200).json(userToken);
+      //const userToken = await authService.loginUser({ email, password });
+      const user = await authService.loginUser({ email, password });
+      delete user.password;
+      res.status(200).json(user);
    } catch (err) {
       next(err);
    }
 });
 
 // Token 유효성 판별
-authRouter.get('/', async (req, res, next) => {
-   const token = req.headers['authorization']?.split(' ')[1];
-   console.log('token: ', token);
+authRouter.get('/', loginRequired, async (req, res, next) => {
+   try {
+      console.log('uerid =', req.currentUserId);
+      const userId = req.currentUserId;
+      res.state(200).json({ userId });
+   } catch (err) {}
 });
 
 export { authRouter };
