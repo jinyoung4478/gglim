@@ -103,8 +103,7 @@ const Login = {
             passwordMessage.innerText = res.message;
             return;
          }
-         const token = res.token;
-         sessionStorage.setItem('token', token);
+         sessionStorage.setItem('token', res.token);
 
          navigate('http://localhost:3000/');
       }

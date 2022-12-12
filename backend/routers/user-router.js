@@ -21,4 +21,10 @@ userRouter.post('/', async (req, res, next) => {
    }
 });
 
+// 유저 정보 - Get user info by nickname
+userRouter.post('/:nickname', async (req, res, next) => {
+   const nickname = req.params.nickname;
+   console.log('nickname =', nickname);
+});
+
 export { userRouter };
