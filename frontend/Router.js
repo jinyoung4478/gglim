@@ -24,6 +24,9 @@ const Router = () => {
    const match = routes.find(route => route.path === location.pathname);
    const page = match ? match.view : NotFound;
 
+   // 특정 페이지의 경우 로그인이 요구되거나 관리자 계정이 필요하므로 이 부분에서 판별.
+   // 판별 후 조건에 부합하지 않을 경우 다른 페이지로 라우팅.
+
    // Load Header
    const header = Header.template();
    // Load Page

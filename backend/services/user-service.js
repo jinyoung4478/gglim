@@ -27,6 +27,7 @@ class UserService {
       await this.userModel.create(newUserInfo);
       return;
    }
+   async getUser(userId) {}
 }
 
 const userService = new UserService(userModel);
