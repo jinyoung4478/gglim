@@ -26,7 +26,6 @@ const Header = {
       function renderHeaderList() {
          const headerList = !isLoggedIn
             ? `
-                <li><a href="#" data-link>이용수칙</a></li>
                 <li><a href="/login" data-link>로그인</a></li>
                 <li><a href="/register" data-link>회원가입</a></li>
                 `

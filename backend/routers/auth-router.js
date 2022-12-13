@@ -50,7 +50,7 @@ authRouter.post('/login', async (req, res, next) => {
 
       //const userToken = await authService.loginUser({ email, password });
       const user = await authService.loginUser({ email, password });
-      delete user.password;
+
       res.status(200).json(user);
    } catch (err) {
       next(err);
