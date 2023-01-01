@@ -1,6 +1,6 @@
 // import Component
 import Header from '/components/Header.js';
-// imrt Pages
+// import Pages
 import Login from '/pages/Login.js';
 import Register from '/pages/Register.js';
 import Square from '/pages/Square.js';
