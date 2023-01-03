@@ -8,6 +8,7 @@ const Square = {
                </div>
             </div>
             <div class="square-wrapper">
+               <button class="square-create-button" data-id='create'>빈 테이블에 앉기 (채팅룸 생성)</button>
                <div class="square-street">
                   <h2>테이블 목록</h2>
                   <div class="square-table-list" data-id="table">
@@ -30,11 +31,16 @@ const Square = {
          room => `
       <div class="square-table ${room.nowMember === room.fullMember ? 'square-table-full' : ''}">
          <h3>${room.title} (${room.nowMember}/${room.fullMember})</h3>
-      </div>
-      `,
+      </div>`,
       );
+
+      createButton.addEventListener('click', createRoom);
       const socket = io();
-      console.log(socket);
+
+      function createRoom() {
+         console.log('Hello');
+         socket.emit('joinRoom', 'test');
+      }
       // function handleMessageSubmit(e) {
       //    e.preventDefault();
       //    socket.emit('newMessage', messageInput.value, roomName, () => {
@@ -43,10 +49,11 @@ const Square = {
       //       messageInput.focus();
       //    });
       // }
-      // socket.on('welcome', (user, newCount) => {
-      //    roomTitle.innerText = `Room: ${roomName} (${newCount})`;
-      //    addMessage(`${user} arrived!`);
-      // });
+      socket.on('welcome', (user, newCount) => {
+         console.log(user, newCount);
+         //roomTitle.innerText = `Room: ${roomName} (${newCount})`;
+         //addMessage(`${user} arrived!`);
+      });
    },
 };
 

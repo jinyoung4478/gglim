@@ -59,3 +59,13 @@
 .square-table-full {
    opacity: 0.5;
 }
+
+.square-create-button {
+   width: 15rem;
+   height: 2rem;
+   color: white;
+   text-align: center;
+   border: 1px solid rgba(0, 0, 0, 0.5);
+   background-color: var(--green);
+   margin-left: 13rem;
+}
