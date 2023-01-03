@@ -20,7 +20,7 @@ const Square = {
    },
    script: () => {
       const tableElem = document.querySelector("[data-id='table']");
-      const createButton = document.querySelector("[data-id='create']");
+
       const data = [
          { title: '심심한 사람?', nowMember: 4, fullMember: 5 },
          { title: '심심한 사람?', nowMember: 4, fullMember: 5 },

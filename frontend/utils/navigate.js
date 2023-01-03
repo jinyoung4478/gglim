@@ -1,7 +1,7 @@
 import Router from '/frontend/Router.js';
 
 const navigate = path => {
-   console.clear();
+   // console.clear();
    // 새로운 url일 경우
    if (path) history.pushState(null, null, path);
 
